@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Master table: Klinik
+model Klinik {
+  id        String   @id @default(uuid())
+  nama      String   @db.VarChar(50)
+  alamat    String?  @db.VarChar(100)
+  kode_auth String   @db.VarChar(50)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  kelasRuangan    KelasRuangan[]
+  users           User[]
+  kategoriRuangan KategoriRuangan[]
+
+  @@map("klinik")
+}
+
+// Master table: Kelas Ruangan
+model KelasRuangan {
+  id         String   @id @default(uuid())
+  id_klinik  String   @map("klinik_id")
+  nama_kelas String   @db.VarChar(40)
+  is_active  Boolean  @default(true)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  klinik          Klinik            @relation(fields: [id_klinik], references: [id])
+  kategoriRuangan KategoriRuangan[]
+
+  @@map("kelas_ruangan")
+}
+
+// Users table
+model User {
+  id            String   @id @default(uuid())
+  id_klinik     String   @map("klinik_id")
+  nama_lengkap  String   @db.VarChar(40)
+  email         String   @unique @db.VarChar(30)
+  username      String   @unique @db.VarChar(20)
+  password_hash String   @db.VarChar(255)
+  is_admin      Boolean  @default(false)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  klinik Klinik @relation(fields: [id_klinik], references: [id])
+
+  @@map("users")
+}
+
+// Kategori Ruangan table
+model KategoriRuangan {
+  id                String   @id @default(uuid())
+  id_klinik         String   @map("klinik_id")
+  id_kelas_ruangan  String   @map("kelas_ruangan_id")
+  jenis_kelamin     String   @db.VarChar(20)
+  usia              String   @db.VarChar(20)
+  penyakit          String   @db.VarChar(100)
+  nama_ruangan      String   @db.VarChar(100)
+  harga_ruangan     String   @db.VarChar(100)
+  fasilitas_ruangan Json?
+  is_active         Boolean  @default(true)
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  klinik       Klinik       @relation(fields: [id_klinik], references: [id])
+  kelasRuangan KelasRuangan @relation(fields: [id_kelas_ruangan], references: [id])
+
+  @@map("kategori_ruangan")
+}
