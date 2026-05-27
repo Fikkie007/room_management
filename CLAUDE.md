@@ -187,7 +187,7 @@ export default defineConfig({
 - [✅] Autentikasi dengan JWT
 - [✅] Middleware RBAC
 - [✅] CRUD endpoints untuk kategori_ruangan
-- [ ] Frontend: Login/Register page
+- [✅] Frontend: Login/Register page
 - [ ] Frontend: Daftar ruangan dengan pagination & search
 - [ ] Frontend: Form tambah/edit ruangan (Admin)
 - [ ] Validasi Yup untuk semua form

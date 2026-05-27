@@ -1,48 +1,25 @@
 import authService from '../services/authService.js';
-import { registerSchema, loginSchema } from '../validations/authValidation.js';
-import { formatYupErrors } from '../utils/validation.js';
-import { ValidationError } from 'yup';
 
 const register = async (req, res, next) => {
   try {
-    const validatedData = await registerSchema.validate(req.body, {
-      abortEarly: false,
-      stripUnknown: true,
-    });
-    const result = await authService.register(validatedData);
+    const result = await authService.register(req.body);
     res.status(201).json({
       success: true,
       data: result,
     });
   } catch (error) {
-    if (error instanceof ValidationError) {
-      return res.status(400).json({
-        success: false,
-        errors: formatYupErrors(error),
-      });
-    }
     next(error);
   }
 };
 
 const login = async (req, res, next) => {
   try {
-    const validatedData = await loginSchema.validate(req.body, {
-      abortEarly: false,
-      stripUnknown: true,
-    });
-    const result = await authService.login(validatedData);
+    const result = await authService.login(req.body);
     res.json({
       success: true,
       data: result,
     });
   } catch (error) {
-    if (error instanceof ValidationError) {
-      return res.status(400).json({
-        success: false,
-        errors: formatYupErrors(error),
-      });
-    }
     next(error);
   }
 };

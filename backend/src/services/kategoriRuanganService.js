@@ -1,7 +1,7 @@
 import prisma from '../config/database.js';
 import { AppError } from '../middleware/errorHandler.js';
 
-const getAll = async ({ page, perPage, search, id_klinik }) => {
+const getAll = async ({ page, perPage, search, id_klinik, is_active }) => {
   const skip = (page - 1) * perPage;
 
   const where = {
@@ -12,7 +12,7 @@ const getAll = async ({ page, perPage, search, id_klinik }) => {
       },
     }),
     ...(id_klinik && { id_klinik }),
-    is_active: true,
+    ...(is_active !== undefined && { is_active }),
   };
 
   const [data, total] = await Promise.all([

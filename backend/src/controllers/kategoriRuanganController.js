@@ -1,15 +1,14 @@
 import kategoriRuanganService from "../services/kategoriRuanganService.js";
-import { formatYupErrors } from "../utils/validation.js";
-import { kategoriRuanganSchema } from "../validations/kategoriRuanganValidation.js";
 
 const getAll = async (req, res, next) => {
   try {
-    const { page = 1, perPage = 10, search, id_klinik } = req.query;
+    const { page = 1, perPage = 10, search, id_klinik, is_active } = req.query;
     const result = await kategoriRuanganService.getAll({
       page: parseInt(page),
       perPage: parseInt(perPage),
       search,
       id_klinik,
+      is_active: is_active === 'true' ? true : is_active === 'false' ? false : undefined,
     });
     res.json({
       success: true,
@@ -34,23 +33,12 @@ const getById = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   try {
-    const validatedData = await kategoriRuanganSchema.validate(req.body, {
-      abortEarly: false,
-      stripUnknown: true,
-    });
-
     const result = await kategoriRuanganService.create(req.body);
     res.status(201).json({
       success: true,
       data: result,
     });
   } catch (error) {
-    if (error instanceof ValidationError) {
-      return res.status(400).json({
-        success: false,
-        errors: formatYupErrors(error),
-      });
-    }
     next(error);
   }
 };

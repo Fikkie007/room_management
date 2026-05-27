@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import ReCAPTCHA from 'react-google-recaptcha';
 import loginSchema from '../validations/loginSchema';
 import InputField from '../components/InputField';
+import authApi from '../services/api/authApi';
 
 const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
@@ -52,21 +53,11 @@ function LoginPage() {
         return;
       }
 
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+      const data = await authApi.login(formData);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.setItem('token', data.token);
-        navigate('/kategori-ruangan');
-      } else {
-        setErrors({ general: data.message || 'User tidak ditemukan' });
-        resetCaptcha();
-      }
+      localStorage.setItem('token', data.data.token);
+      localStorage.setItem('user', JSON.stringify(data.data.user));
+      navigate('/kategori-ruangan');
     } catch (err) {
       if (err.name === 'ValidationError') {
         const validationErrors = {};
@@ -75,7 +66,7 @@ function LoginPage() {
         });
         setErrors(validationErrors);
       } else {
-        setErrors({ general: 'An error occurred. Please try again.' });
+        setErrors({ general: err.message || 'User tidak ditemukan' });
       }
       resetCaptcha();
     } finally {
