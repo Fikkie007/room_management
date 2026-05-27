@@ -185,8 +185,8 @@ export default defineConfig({
 - [✅] Implementasi database & migrations
 - [✅] Seed data untuk master tables (users, klinik, kelas_ruangan)
 - [✅] Autentikasi dengan JWT
-- [ ] Middleware RBAC
-- [ ] CRUD endpoints untuk kategori_ruangan
+- [✅] Middleware RBAC
+- [✅] CRUD endpoints untuk kategori_ruangan
 - [ ] Frontend: Login/Register page
 - [ ] Frontend: Daftar ruangan dengan pagination & search
 - [ ] Frontend: Form tambah/edit ruangan (Admin)
