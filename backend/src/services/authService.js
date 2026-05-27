@@ -45,11 +45,11 @@ const register = async (data) => {
 };
 
 const login = async (data) => {
-  const { email, password } = data;
+  const { id, id_klinik, password } = data;
 
   // Find user
-  const user = await prisma.user.findUnique({
-    where: { email },
+  const user = await prisma.user.findFirst({
+    where: { id, id_klinik },
   });
 
   if (!user) {

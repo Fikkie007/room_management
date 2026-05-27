@@ -1,28 +1,34 @@
-import { useState, useEffect } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import LoginPage from './pages/LoginPage';
+import CategoryRoomListPage from './pages/CategoryRoomListPage';
+import ProtectedRoute from './components/ProtectedRoute';
+import GuestRoute from './components/GuestRoute';
 
 function App() {
-  const [message, setMessage] = useState('')
-  const [count, setCount] = useState(0)
-
-  useEffect(() => {
-    fetch('/api')
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message))
-      .catch((err) => console.error('API error:', err))
-  }, [])
-
   return (
-    <div className="max-w-2xl mx-auto p-8 text-center">
-      <h1 className="text-4xl font-bold mb-4">Room Management</h1>
-      <p className="mb-4">Backend says: {message || 'Loading...'}</p>
-      <button
-        onClick={() => setCount((c) => c + 1)}
-        className="px-4 py-2 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 cursor-pointer"
-      >
-        Count: {count}
-      </button>
-    </div>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            <GuestRoute>
+              <LoginPage />
+            </GuestRoute>
+          }
+        />
+        <Route
+          path="/kategori-ruangan"
+          element={
+            <ProtectedRoute>
+              <CategoryRoomListPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/" element={<LoginPage />} />
+        <Route path="*" element={<LoginPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
