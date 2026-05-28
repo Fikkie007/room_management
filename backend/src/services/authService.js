@@ -50,6 +50,14 @@ const login = async (data) => {
   // Find user
   const user = await prisma.user.findFirst({
     where: { id, id_klinik },
+    include: {
+      klinik: {
+        select: {
+          id: true,
+          nama: true,
+        },
+      },
+    },
   });
 
   if (!user) {
@@ -78,6 +86,7 @@ const login = async (data) => {
       email: user.email,
       nama_lengkap: user.nama_lengkap,
       is_admin: user.is_admin,
+      klinik: user.klinik,
     },
   };
 };

@@ -6,8 +6,11 @@ import Pagination from '../components/CategoryRoom/Pagination';
 import RoomForm from '../components/CategoryRoom/RoomForm';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
+
 import useKategoriRuangan from '../hooks/useKategoriRuangan';
 import kategoriRuanganApi from '../services/api/kategoriRuanganApi';
+import Sidebar from '../components/CategoryRoom/Sidebar';
+import Footer from '../components/CategoryRoom/Footer';
 
 function CategoryRoomList() {
   const {
@@ -49,12 +52,14 @@ function CategoryRoomList() {
     }
 
     setIsSubmitting(true);
+
     try {
       if (modalMode === 'add') {
         await kategoriRuanganApi.create(data);
       } else {
         await kategoriRuanganApi.update(selectedItem.id, data);
       }
+
       setShowModal(false);
       fetchData(pagination.page);
     } catch (err) {
@@ -68,7 +73,9 @@ function CategoryRoomList() {
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
+
     setIsSubmitting(true);
+
     try {
       await kategoriRuanganApi.delete(deleteTarget.id);
       setShowDeleteDialog(false);
@@ -83,47 +90,64 @@ function CategoryRoomList() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header user={user} onLogout={handleLogout} />
+    <div className="min-h-screen bg-gray-50 flex">
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <Toolbar
-          search={search}
-          onSearchChange={(e) => setSearch(e.target.value)}
-          statusFilter={statusFilter}
-          onStatusFilterChange={(e) => setStatusFilter(e.target.value)}
-          isAdmin={user?.is_admin}
-          onAddClick={openAddModal}
-        />
+      <Sidebar />
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-            {error}
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+
+        {/* Header */}
+        <Header user={user} onLogout={handleLogout} />
+
+        {/* Content */}
+        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+          <Toolbar
+            search={search}
+            onSearchChange={(e) => setSearch(e.target.value)}
+            statusFilter={statusFilter}
+            onStatusFilterChange={(e) => setStatusFilter(e.target.value)}
+            isAdmin={user?.is_admin}
+            onAddClick={openAddModal}
+          />
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+              {error}
+            </div>
+          )}
+
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            {/* <DataTable
+              data={data}
+              isLoading={isLoading}
+              isAdmin={user?.is_admin}
+              onEdit={openEditModal}
+              onDelete={openDeleteDialog}
+            /> */}
+
+            <MobileList
+              data={data}
+              isLoading={isLoading}
+              isAdmin={user?.is_admin}
+              onEdit={openEditModal}
+              onDelete={openDeleteDialog}
+            />
           </div>
-        )}
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          <DataTable
-            data={data}
-            isLoading={isLoading}
-            isAdmin={user?.is_admin}
-            onEdit={openEditModal}
-            onDelete={openDeleteDialog}
-          />
-          <MobileList
-            data={data}
-            isLoading={isLoading}
-            isAdmin={user?.is_admin}
-            onEdit={openEditModal}
-            onDelete={openDeleteDialog}
-          />
-        </div>
+          {!isLoading && data.length > 0 && (
+            <Pagination
+              pagination={pagination}
+              onPageChange={handlePageChange}
+            />
+          )}
+        </main>
 
-        {!isLoading && data.length > 0 && (
-          <Pagination pagination={pagination} onPageChange={handlePageChange} />
-        )}
-      </main>
+        <Footer />
+      </div>
 
+      {/* Modal */}
       <Modal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
@@ -141,6 +165,7 @@ function CategoryRoomList() {
         />
       </Modal>
 
+      {/* Delete Dialog */}
       <ConfirmDialog
         isOpen={showDeleteDialog}
         onClose={() => setShowDeleteDialog(false)}

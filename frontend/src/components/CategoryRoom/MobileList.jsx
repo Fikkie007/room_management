@@ -38,9 +38,8 @@ function MobileActionButtons({ item, onEdit, onDelete }) {
 function MobileStatusBadge({ isActive }) {
   return (
     <span
-      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-        isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-      }`}
+      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        }`}
     >
       {isActive ? 'Aktif' : 'Nonaktif'}
     </span>
@@ -109,7 +108,7 @@ function MobileListItem({ item, isAdmin, onEdit, onDelete }) {
 
 export default function MobileList({ data, isLoading, isAdmin, onEdit, onDelete }) {
   return (
-    <div className="md:hidden divide-y divide-gray-200">
+    <div className="divide-y divide-gray-200">
       {isLoading ? (
         <div className="px-4 py-8 text-center text-gray-500">
           <LoadingSpinner />
